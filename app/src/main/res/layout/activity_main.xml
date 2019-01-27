@@ -10,7 +10,7 @@
         android:id="@+id/header"
         android:background="#0e0f1a"
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:layout_height="55dp">
 
 
         <TextView
@@ -30,9 +30,16 @@
             android:layout_marginRight="15dp"
             android:background="@drawable/plus"/>
     </RelativeLayout>
-    <android.support.v7.widget.RecyclerView
-        android:layout_alignTop="@+id/video_list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/layout_swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/activity_item" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/video_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/video_list"
+            tools:listitem="@layout/activity_item" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>
