@@ -13,13 +13,16 @@
         android:layout_height="55dp">
 
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_centerVertical="true"
-            android:text="TextView" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_detail"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="centerCrop"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FF000000"
+            android:src="@drawable/icon" />
+
+
 
         <Button
             android:id="@+id/add_botton"
