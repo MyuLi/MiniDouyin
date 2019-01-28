@@ -1,9 +1,12 @@
 package com.example.minidouyin;
 
+import android.content.Intent;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Message;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -12,15 +15,23 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.TextView;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import static com.bytedance.camera.demo.utils.Utils.MEDIA_TYPE_IMAGE;
-import static com.bytedance.camera.demo.utils.Utils.MEDIA_TYPE_VIDEO;
-import static com.bytedance.camera.demo.utils.Utils.getOutputMediaFile;
+import static com.example.minidouyin.utils.Utils.MEDIA_TYPE_IMAGE;
+import static com.example.minidouyin.utils.Utils.MEDIA_TYPE_VIDEO;
+import static com.example.minidouyin.utils.Utils.getOutputMediaFile;
 
 public class CustomCameraActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -28,10 +39,14 @@ public class CustomCameraActivity extends AppCompatActivity implements SurfaceHo
     private SurfaceHolder mHolder;
     private Camera mCamera;
     private float oldDist = 1f;
+    private Button record;
+    private Chronometer timer;
+    private String path;
+    LottieAnimationView animationView;
 
     private int CAMERA_TYPE = Camera.CameraInfo.CAMERA_FACING_BACK;
 
-    private boolean isRecording = false;
+    private int  isRecording = 0;
 
     private int rotationDegree = 0;
 
@@ -44,29 +59,39 @@ public class CustomCameraActivity extends AppCompatActivity implements SurfaceHo
         setContentView(R.layout.activity_custom_camera);
 
         mSurfaceView = findViewById(R.id.img);
-        //todo 给SurfaceHolder添加Callback
+        record = findViewById(R.id.btn_record);
+        timer = (Chronometer)findViewById(R.id.timer);
+        animationView= (LottieAnimationView) findViewById(R.id.animation_view);
+
         mCamera = getCamera(CAMERA_TYPE);
         mHolder = mSurfaceView.getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         startPreview(mHolder);
-        findViewById(R.id.btn_picture).setOnClickListener(v -> {
-            //todo 拍一张照片
-            mCamera.takePicture(null,null,mPicture);
-        });
-
         findViewById(R.id.btn_record).setOnClickListener(v -> {
             //todo 录制，第一次点击是start，第二次点击是stop
-            if (isRecording) {
+            if (isRecording == 1) {
+                record.setText("提交");
                 mMediaRecorder.stop();
                 mMediaRecorder.reset();
                 mMediaRecorder.release();
                 mCamera.lock();
-                isRecording = false;
-
-            } else {
+                isRecording = 2;
+                timer.stop();
+            } else if(isRecording == 0){
+                timer.setBase(SystemClock.elapsedRealtime());
+                animationView.playAnimation();
+                timer.start();
+                animationView.pauseAnimation();
                 prepareVideoRecorder();
-                isRecording = true;
+                isRecording = 1;
+                record.setText("正在录制");
+            }
+            else if(isRecording == 2){
+                Intent intent = new Intent(this,DetailPlayerActivity.class);
+                intent.putExtra("video_url",path);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -183,7 +208,8 @@ public class CustomCameraActivity extends AppCompatActivity implements SurfaceHo
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
         mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
-        mMediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO).toString());
+        path = getOutputMediaFile(MEDIA_TYPE_VIDEO).toString();
+        mMediaRecorder.setOutputFile(path);
         mMediaRecorder.setPreviewDisplay(mSurfaceView.getHolder().getSurface());
         mMediaRecorder.setOrientationHint(rotationDegree);
         try{
@@ -280,23 +306,6 @@ public class CustomCameraActivity extends AppCompatActivity implements SurfaceHo
 
     }
 
-
-
-    private Camera.PictureCallback mPicture = (data, camera) -> {
-        File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-        if (pictureFile == null) {
-            return;
-        }
-        try {
-            FileOutputStream fos = new FileOutputStream(pictureFile);
-            fos.write(data);
-            fos.close();
-        } catch (IOException e) {
-            Log.d("mPicture", "Error accessing file: " + e.getMessage());
-        }
-
-        mCamera.startPreview();
-    };
 
 
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {

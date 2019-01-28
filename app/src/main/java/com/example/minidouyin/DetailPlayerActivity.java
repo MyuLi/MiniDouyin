@@ -76,7 +76,7 @@ public class DetailPlayerActivity extends GSYBaseActivityDetail<StandardGSYVideo
                 int totalItemCount = layoutManager.getItemCount();
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (visibleItemCount > 0 && lastCompletelyVisibleItemPosition >= totalItemCount - 1) {
-                        Toast.makeText(DetailPlayerActivity.this, "已滑动到底部!,触发loadMore", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailPlayerActivity.this, "已滑动到底部!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -148,6 +148,9 @@ public class DetailPlayerActivity extends GSYBaseActivityDetail<StandardGSYVideo
     public void onListItemClick(int clickedItemIndex) {
         //Log.d("getin","ok");
         Intent intent = new Intent(this,DetailPlayerActivity.class);
+        intent.putExtra("student_name",user_feedList.get(clickedItemIndex).getUser_name().toString());
+        intent.putExtra("video_url",user_feedList.get(clickedItemIndex).getVideo().toString());
+        intent.putExtra("student_id",user_feedList.get(clickedItemIndex).getStudent_id().toString());
         startActivity(intent);
     }
 }

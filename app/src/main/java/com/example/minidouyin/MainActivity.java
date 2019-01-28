@@ -178,11 +178,8 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
                 });
     }
     private void takeVideo() {
-        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-        }
-
+        Intent intent = new Intent(MainActivity.this,CustomCameraActivity.class);
+        startActivity(intent);
     }
     private void getAvatar(){
         SharedPreferences lock = getSharedPreferences("lock",MODE_PRIVATE);
