@@ -38,6 +38,7 @@ public class DetailPlayerActivity extends GSYBaseActivityDetail<StandardGSYVideo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_detail_player);
 
+        recyclerView = findViewById(R.id.rv_numbers);
         LinearLayoutManager layoutManager = new LinearLayoutManager(DetailPlayerActivity.this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
@@ -60,7 +61,7 @@ public class DetailPlayerActivity extends GSYBaseActivityDetail<StandardGSYVideo
         detailPlayer.getTitleTextView().setVisibility(View.GONE);
         detailPlayer.getBackButton().setVisibility(View.GONE);
 
-        initVideoList(student_name,student_id);
+        initVideoList(student_name,student_id,video_url);
 
         initVideoBuilderMode();
 
@@ -130,10 +131,11 @@ public class DetailPlayerActivity extends GSYBaseActivityDetail<StandardGSYVideo
         return true;
     }
 
-    private void initVideoList(String student_name,String student_id){
+    private void initVideoList(String student_name,String student_id ,String video_url){
         for(int i = 0; i < Constant.feeds.size(); i++){
             if(Constant.feeds.get(i).getUser_name().equals(student_name)
-                    && Constant.feeds.get(i).getStudent_id().equals(student_id))
+                    && Constant.feeds.get(i).getStudent_id().equals(student_id)
+            && Constant.feeds.get(i).getVideo() != video_url )
             {
                 user_feedList.add(Constant.feeds.get(i));
             }

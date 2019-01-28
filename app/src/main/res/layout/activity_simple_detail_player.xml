@@ -113,13 +113,21 @@
                     android:textSize="20sp" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/text_tip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="该作者的其它视频" />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_numbers"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#FFF5EE"
                 tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                tools:listitem="@layout/activity_item" />
+                tools:listitem="@layout/activity_item" >
+
+            </android.support.v7.widget.RecyclerView>
 
 
         </LinearLayout>
