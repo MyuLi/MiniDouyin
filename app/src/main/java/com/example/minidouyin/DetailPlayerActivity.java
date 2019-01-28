@@ -92,6 +92,8 @@ public class DetailPlayerActivity extends GSYBaseActivityDetail<StandardGSYVideo
             }
         });
 
+
+
     }
 
     @Override

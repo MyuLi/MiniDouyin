@@ -2,6 +2,7 @@ package com.example.minidouyin;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -42,8 +43,6 @@ public class AddVideoActivity extends AppCompatActivity {
 
     private VideoView videoView;
     private ImageView cover_image;
-    private TextView tv_id;
-    private TextView tv_name;
     private Button btn_post;
 
     private static final int REQUEST_VIDEO_CAPTURE = 1;
@@ -64,19 +63,17 @@ public class AddVideoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video);
         Intent intent = getIntent();
         String value = intent.getStringExtra("video_uri");
-        Log.d(TAG, "onCreate: "+intent.getStringExtra("video_uri"));
         if(value != null)
-        mSelectedVideo = Uri.parse(value);
+            mSelectedVideo = Uri.fromFile(new File(value));
         videoView = findViewById(R.id.videoView);
         videoView.setVideoURI(mSelectedVideo);
         videoView.start();
 
         cover_image = findViewById(R.id.cover_image);
-        tv_id = findViewById(R.id.tv_id);
-        //tv_id.setEnabled(true);
-        //tv_name.setEnabled(true);
-        tv_name = findViewById(R.id.tv_name);
+
         btn_post = findViewById(R.id.btn_post);
+
+        getUserInfo();
 
 
         setCover_image();
@@ -84,7 +81,7 @@ public class AddVideoActivity extends AppCompatActivity {
         findViewById(R.id.choose_cover).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            chooseImage();
+                chooseImage();
             }
 
         });
@@ -98,19 +95,8 @@ public class AddVideoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-//               v if(TextUtils.isEmpty(tv_id.getText()))
-//                    Toast.makeText(AddVideoActivity.this,"请输入学号",  Toast.LENGTH_LONG).show();
-//                if(TextUtils.isEmpty(tv_name.getText()))
-//                    Toast.makeText(AddVideoActivity.this,"请输入姓名",  Toast.LENGTH_LONG).show();
-//                // TODO: 2019/1/27 设置里面多个账户，不同账户有不同的历史记录
-//                if(TextUtils.isEmpty(tv_id.getText()) == false&&TextUtils.isEmpty(tv_name.getText()) == false){
-//
-//                    student_id = tv_id.getText().toString();
-//                    student_name = tv_name.getText().toString();
-//                    Toast.makeText(AddVideoActivity.this,student_id+" "+student_name,  Toast.LENGTH_LONG).show();
-                    // TODO: 2019/1/27  获取视频封面
-                    video = getMultipartFromUri("video", mSelectedVideo);
-                    postVideo();
+                video = getMultipartFromUri("video", mSelectedVideo);
+                postVideo();
 
             }
 
@@ -144,6 +130,9 @@ public class AddVideoActivity extends AppCompatActivity {
                 cover_image.setImageURI(mSelectedImage);
             }
         }
+        else{
+            Log.d("errorrr", "selectedImage = " );
+        }
 
     }
 
@@ -151,6 +140,7 @@ public class AddVideoActivity extends AppCompatActivity {
         // if NullPointerException thrown, try to allow storage permission in system settings
         File f = new File(ResourceUtils.getRealPath(AddVideoActivity.this, uri));
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), f);
+        Log.d("Test", "f.getName="+f.getName() + ", name="+name + ",request="+requestFile);
         return MultipartBody.Part.createFormData(name, f.getName(), requestFile);
     }
 
@@ -161,7 +151,7 @@ public class AddVideoActivity extends AppCompatActivity {
                 .baseUrl("http://10.108.10.39:8080/") // 设置 网络请求 Url
                 .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
                 .build();
-        retrofit.create(IMiniDouyinService.class).createVideo("1111","lala",image,video).
+        retrofit.create(IMiniDouyinService.class).createVideo(student_id,student_name,image,video).
                 enqueue(new Callback<PostVideoResponse>() {
                     @Override public void onResponse(Call<PostVideoResponse> call, Response<PostVideoResponse> response) {
                         //response.body().
@@ -183,5 +173,10 @@ public class AddVideoActivity extends AppCompatActivity {
                 .load( mSelectedVideo)
                 .into(cover_image);
 
+    }
+    private void getUserInfo(){
+        SharedPreferences lock = getSharedPreferences("lock",MODE_PRIVATE);
+        student_name = lock.getString("user_name","");
+        student_id  = lock.getString("user_id","");
     }
 }

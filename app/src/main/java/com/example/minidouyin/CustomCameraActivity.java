@@ -68,6 +68,9 @@ public class CustomCameraActivity extends AppCompatActivity implements SurfaceHo
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         startPreview(mHolder);
+        isRecording = 0;
+
+
         findViewById(R.id.btn_record).setOnClickListener(v -> {
             //todo 录制，第一次点击是start，第二次点击是stop
             if (isRecording == 1) {
@@ -77,19 +80,20 @@ public class CustomCameraActivity extends AppCompatActivity implements SurfaceHo
                 mMediaRecorder.release();
                 mCamera.lock();
                 isRecording = 2;
+                animationView.pauseAnimation();
                 timer.stop();
             } else if(isRecording == 0){
+
                 timer.setBase(SystemClock.elapsedRealtime());
                 animationView.playAnimation();
                 timer.start();
-                animationView.pauseAnimation();
                 prepareVideoRecorder();
                 isRecording = 1;
                 record.setText("正在录制");
             }
             else if(isRecording == 2){
-                Intent intent = new Intent(this,DetailPlayerActivity.class);
-                intent.putExtra("video_url",path);
+                Intent intent = new Intent(this,AddVideoActivity.class);
+                intent.putExtra("video_uri",path);
                 startActivity(intent);
                 finish();
             }
@@ -131,7 +135,7 @@ public class CustomCameraActivity extends AppCompatActivity implements SurfaceHo
         //todo ok 摄像头添加属性，例是否自动对焦，设置旋转方向等
         rotationDegree = getCameraDisplayOrientation(position);
         cam.setDisplayOrientation(rotationDegree);
-      // cam.cancelAutoFocus();
+        cam.cancelAutoFocus();
         return cam;
     }
 

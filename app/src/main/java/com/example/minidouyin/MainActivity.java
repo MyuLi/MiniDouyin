@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -18,14 +17,17 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.minidouyin.model.Constant;
 import com.example.minidouyin.model.Feed;
 import com.example.minidouyin.model.FeedResponse;
 import com.example.minidouyin.model.MyAdapter;
+import com.example.minidouyin.model.SlideMenu;
 import com.example.minidouyin.network.IMiniDouyinService;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
     private SwipeRefreshLayout mRefreshLayout;
     private Button add_botton;
     private de.hdodenhof.circleimageview.CircleImageView user_detail;
+    private SlideMenu slideMenu;
+    private ImageView menu_image;
 
     List<Feed> feeds = new ArrayList<>();
     private static final int REQUEST_VIDEO_CAPTURE = 1;
@@ -55,15 +59,21 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
 
         Log.d(TAG, "onCreate: ");
 
-
-
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.video_list);
         add_botton = findViewById(R.id.add_botton);
         user_detail = findViewById(R.id.user_detail);
+        slideMenu = (SlideMenu)findViewById(R.id.slideMenu);
+        user_detail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                slideMenu.switchMenu();;
+            }
+        });
         getAvatar();
 
         mRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.layout_swipe_refresh);
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -185,6 +195,9 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
         SharedPreferences lock = getSharedPreferences("lock",MODE_PRIVATE);
         String avatar_path = lock.getString("avatar_path","");
         user_detail.setImageURI(Uri.parse(avatar_path));
+        Uri uri = Uri.fromFile(new File(avatar_path));
+        menu_image = findViewById(R.id.menu_image);
+        menu_image.setImageURI(uri);
     }
 
 
