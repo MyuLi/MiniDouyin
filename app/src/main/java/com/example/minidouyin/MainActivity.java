@@ -2,6 +2,7 @@ package com.example.minidouyin;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -19,14 +20,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.minidouyin.model.Constant;
 import com.example.minidouyin.model.Feed;
 import com.example.minidouyin.model.FeedResponse;
+import com.example.minidouyin.model.MyAdapter;
 import com.example.minidouyin.network.IMiniDouyinService;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.MissingFormatArgumentException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,16 +41,28 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
     private RecyclerView recyclerView;
     private SwipeRefreshLayout mRefreshLayout;
     private Button add_botton;
+    private de.hdodenhof.circleimageview.CircleImageView user_detail;
+
     List<Feed> feeds = new ArrayList<>();
     private static final int REQUEST_VIDEO_CAPTURE = 1;
-    // TODO: 2019/1/27 增加历史提交记录 
+    private static final int GET_USER_INFO = 2;
+    // TODO: 2019/1/27 增加历史提交记录
+    private final String TAG = "main";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "onCreate: ");
+
+
+
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.video_list);
         add_botton = findViewById(R.id.add_botton);
+        user_detail = findViewById(R.id.user_detail);
+        getAvatar();
+
         mRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.layout_swipe_refresh);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
@@ -132,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
         intent.putExtra("student_name",feeds.get(clickedItemIndex).getUser_name().toString());
         intent.putExtra("video_url",feeds.get(clickedItemIndex).getVideo().toString());
         intent.putExtra("student_id",feeds.get(clickedItemIndex).getStudent_id().toString());
+        Constant.feeds = feeds;
         startActivity(intent);
     }
     private void loadPics(Feed[] newfeeds) {
@@ -170,6 +184,11 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
         }
 
     }
+    private void getAvatar(){
+        SharedPreferences lock = getSharedPreferences("lock",MODE_PRIVATE);
+        String avatar_path = lock.getString("avatar_path","");
+        user_detail.setImageURI(Uri.parse(avatar_path));
+    }
 
 
     @Override
@@ -180,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
             mIntent.putExtra("video_uri",String.valueOf(videoUri));
             startActivity(mIntent);
         }
+
     }
 
 
@@ -203,4 +223,5 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
             }
         }
     }
+
 }

@@ -27,10 +27,8 @@ public class UserInfoActivity extends AppCompatActivity {
     private Button btn_submit;
     private Button btn_add;
     private final String TAG = "UserInfo";
-    private Uri mSelectedImage = null;
+    private Uri mSelectedImage =null;
     private ImageView avatar_image;
-
-
 
 
     private static final int PICK_IMAGE = 1;
@@ -40,10 +38,11 @@ public class UserInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
-        user_name = findViewById(R.id.tv_name);
-        user_id = findViewById(R.id.tv_id);
-        btn_submit = findViewById(R.id.btn_post);
-        btn_add = findViewById(R.id.add_botton);
+
+        user_name = findViewById(R.id.user_name);
+        user_id = findViewById(R.id.user_id);
+        btn_submit = findViewById(R.id.submit);
+        btn_add = findViewById(R.id.change_avatar);
         avatar_image = findViewById(R.id.avatar_iamge);
 
         btn_add.setOnClickListener(new View.OnClickListener() {
@@ -63,12 +62,12 @@ public class UserInfoActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"请输入完整信息",Toast.LENGTH_LONG).show();
                 }
                 else{
+
                     String id_get = user_id.getText().toString().trim();
                     String name_get = user_name.getText().toString().trim();
                     String image_path ;
-                    if(mSelectedImage == null){
+                    if(mSelectedImage != null){
                         image_path = mSelectedImage.toString();
-
                     }
                     else {
                         Resources resources = getResources();
@@ -77,14 +76,16 @@ public class UserInfoActivity extends AppCompatActivity {
                                 resources.getResourceTypeName(R.drawable.icon) + "/" +
                                 resources.getResourceEntryName(R.drawable.icon);
                     }
-                    //步骤2-1：创建一个SharedPreferences.Editor接口对象，lock表示要写入的XML文件名，MODE_WORLD_WRITEABLE写操作
-                    SharedPreferences.Editor editor = getSharedPreferences("lock", MODE_WORLD_WRITEABLE).edit();
-                    //步骤2-2：将获取过来的值放入文件
-                    editor.putString("student_id", id_get);
-                    editor.putString("student_name",name_get);
-                    editor.putString("avatar_uri",image_path);
-                    //步骤3：提交
+                    SharedPreferences.Editor editor = getSharedPreferences("lock",MODE_PRIVATE).edit();
+                    SharedPreferences sharedPreferences = getSharedPreferences("lock",MODE_PRIVATE);
+                    editor.putString("user_name",name_get);
+                    editor.putString("user_id",id_get);
+                    editor.putString("avatar_path",image_path);
                     editor.commit();
+                    startActivity(new Intent(UserInfoActivity.this, MainActivity.class));
+                    finish();
+                    //把返回数据存入Intent
+
                 }
             }
         });

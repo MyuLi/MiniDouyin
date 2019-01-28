@@ -174,6 +174,8 @@ public class AddVideoActivity extends AppCompatActivity {
                         Log.d(TAG, "onFailure: "+t.getMessage());
                     }
                 });
+        AddVideoActivity.this.finish();
+
     }
 
     private void setCover_image(){

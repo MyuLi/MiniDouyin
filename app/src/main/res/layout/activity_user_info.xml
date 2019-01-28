@@ -78,26 +78,24 @@
 
     <EditText
         android:id="@+id/user_id"
-        android:hint="请输入数字"
-        android:layout_toRightOf="@id/ID"
-        android:ems="5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/avatar"
         android:layout_marginTop="35dp"
-        android:text="TextView" />
+        android:layout_toRightOf="@id/ID"
+        android:ems="5"
+        android:hint="请输入数字" />
 
     <EditText
         android:id="@+id/user_name"
-        android:hint="请输入姓名"
-        android:ems="5"
-        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/Name"
         android:layout_below="@id/user_id"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:text="TextView" />
+        android:layout_toRightOf="@id/Name"
+        android:ems="5"
+        android:hint="请输入姓名" />
 
     <Button
         android:id="@+id/submit"

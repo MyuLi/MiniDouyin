@@ -2,43 +2,94 @@ package com.example.minidouyin;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.example.minidouyin.model.Constant;
+import com.example.minidouyin.model.Feed;
+import com.example.minidouyin.model.MyAdapter;
 import com.shuyu.gsyvideoplayer.GSYBaseActivityDetail;
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author tianye.xy@bytedance.com
  * 2019/1/9
  */
-public class DetailPlayerActivity extends GSYBaseActivityDetail<StandardGSYVideoPlayer> {
+public class DetailPlayerActivity extends GSYBaseActivityDetail<StandardGSYVideoPlayer> implements MyAdapter.ListItemClickListener{
     StandardGSYVideoPlayer detailPlayer;
     private  String video_url;
     private  String student_name;
     private  String student_id;
-
-
+    private List<Feed> user_feedList = new ArrayList<>();
+    private MyAdapter mAdapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_detail_player);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(DetailPlayerActivity.this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.setHasFixedSize(true);
+        mAdapter = new MyAdapter(user_feedList,this);
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+
+        TextView nametext = (TextView)findViewById(R.id.tv_name);
+        TextView idtext = (TextView)findViewById(R.id.tv_id);
         Intent intent = getIntent();
         video_url = intent.getStringExtra("video_url");
         student_id = intent.getStringExtra("student_id");
         student_name = intent.getStringExtra("student_name");
-
-
+        nametext.setText(student_name);
+        idtext.setText(student_id);
         detailPlayer = (StandardGSYVideoPlayer) findViewById(R.id.detail_player);
         //增加title
         detailPlayer.getTitleTextView().setVisibility(View.GONE);
         detailPlayer.getBackButton().setVisibility(View.GONE);
 
+        initVideoList(student_name,student_id);
+
         initVideoBuilderMode();
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            // 最后一个完全可见项的位置
+            private int lastCompletelyVisibleItemPosition;
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (visibleItemCount > 0 && lastCompletelyVisibleItemPosition >= totalItemCount - 1) {
+                        Toast.makeText(DetailPlayerActivity.this, "已滑动到底部!,触发loadMore", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                if (layoutManager instanceof LinearLayoutManager) {
+                    lastCompletelyVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition();
+                }
+                //Log.d(TAG, "onScrolled: lastVisiblePosition=" + lastCompletelyVisibleItemPosition);
+            }
+        });
 
     }
 
@@ -79,18 +130,25 @@ public class DetailPlayerActivity extends GSYBaseActivityDetail<StandardGSYVideo
         return true;
     }
 
-//    private void loadCover(ImageView imageView, String url) {
-//        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//        imageView.setImageResource(R.mipmap.xxx1);
-//        Glide.with(this.getApplicationContext())
-//                .setDefaultRequestOptions(
-//                        new RequestOptions()
-//                                .frame(3000000)
-//                                .centerCrop()
-//                                .error(R.mipmap.xxx2)
-//                                .placeholder(R.mipmap.xxx1))
-//                .load(url)
-//                .into(imageView);
-//    }
+    private void initVideoList(String student_name,String student_id){
+        for(int i = 0; i < Constant.feeds.size(); i++){
+            if(Constant.feeds.get(i).getUser_name().equals(student_name)
+                    && Constant.feeds.get(i).getStudent_id().equals(student_id))
+            {
+                user_feedList.add(Constant.feeds.get(i));
+            }
+        }
+    }
 
+
+
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+        //Log.d("getin","ok");
+        Intent intent = new Intent(this,DetailPlayerActivity.class);
+        startActivity(intent);
+    }
 }
+
+
+

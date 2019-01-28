@@ -1,4 +1,4 @@
-package com.example.minidouyin;
+package com.example.minidouyin.model;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.minidouyin.model.Feed;
+import com.example.minidouyin.R;
 
 import java.util.List;
 
