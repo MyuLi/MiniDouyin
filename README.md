@@ -1,6 +1,11 @@
 # MiniDouyin
 这是一个应用Android开发最基础知识点完成的一个mini抖音的APP。
 
+队员
+-
+李妙宇+卢虹羽
+
+
 基础功能
 -
 视频显示页面：使用老师提供的API，利用recyclerview方法，应用glide加载封面图。
