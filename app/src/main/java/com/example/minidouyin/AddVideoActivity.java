@@ -124,7 +124,8 @@ public class AddVideoActivity extends AppCompatActivity {
             if (requestCode == PICK_IMAGE) {
                 mSelectedImage = data.getData();
                 setCover_image();
-                Log.d(TAG, "selectedImage = " + mSelectedImage);
+                videoView.setVideoURI(mSelectedVideo);
+                videoView.start();
                 MultipartBody.Part coverImage = getMultipartFromUri("cover_image", mSelectedImage);
                 image = coverImage;
                 cover_image.setImageURI(mSelectedImage);

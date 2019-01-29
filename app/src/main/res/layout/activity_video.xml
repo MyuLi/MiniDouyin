@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
+    android:background="#FFF5EE"
     android:orientation="vertical">
 
     <VideoView
@@ -18,6 +19,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+
         android:layout_weight="2">
 
         <ImageView
@@ -36,14 +38,23 @@
 
             <Button
                 android:id="@+id/choose_cover"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="2"
                 android:layout_height="40dp"
+                android:textColor="@color/colorOrange"
+                android:background="@drawable/my_button_bg"
                 android:text="choose cover" />
-
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp" />
             <Button
                 android:id="@+id/btn_post"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:textColor="@color/colorOrange"
                 android:layout_height="40dp"
+                android:background="@drawable/my_button_bg"
                 android:text="post" />
         </LinearLayout>
 

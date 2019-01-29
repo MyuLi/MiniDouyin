@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -49,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
 
     List<Feed> feeds = new ArrayList<>();
     private static final int REQUEST_VIDEO_CAPTURE = 1;
-    private static final int GET_USER_INFO = 2;
     // TODO: 2019/1/27 增加历史提交记录
     private final String TAG = "main";
 
@@ -60,31 +60,22 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
         Log.d(TAG, "onCreate: ");
 
         setContentView(R.layout.activity_main);
+
         recyclerView = findViewById(R.id.video_list);
         add_botton = findViewById(R.id.add_botton);
         user_detail = findViewById(R.id.user_detail);
         slideMenu = (SlideMenu)findViewById(R.id.slideMenu);
-        user_detail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                slideMenu.switchMenu();;
-            }
-        });
+
+
         getAvatar();
 
         mRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.layout_swipe_refresh);
-
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(layoutManager);
-
-        recyclerView.setHasFixedSize(true);
-
             // TODO: 2019/1/26 获取feedlist
         updateFeed();
 
-        mAdapter = new MyAdapter(feeds,this);
+        mAdapter = new MyAdapter(this,feeds,this);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager
+                (2, StaggeredGridLayoutManager.VERTICAL));
         recyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
 
@@ -136,6 +127,12 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
                 //Log.d(TAG, "onScrolled: lastVisiblePosition=" + lastCompletelyVisibleItemPosition);
             }
         });
+        user_detail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                slideMenu.switchMenu();;
+            }
+        });
 
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             public void onRefresh() {
@@ -165,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.ListIte
         for(int i = 0; i < newfeeds.length; i++){
             feeds.add(newfeeds[i]);
         }
-
+        mAdapter.addRandomHeight(feeds);
         mAdapter.notifyDataSetChanged();
     }
     private void updateFeed(){

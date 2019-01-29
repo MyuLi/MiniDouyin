@@ -37,7 +37,8 @@
         <activity android:name=".DetailPlayerActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             ></activity>
-        <activity android:name=".CustomCameraActivity"></activity>
+        <activity android:name=".CustomCameraActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

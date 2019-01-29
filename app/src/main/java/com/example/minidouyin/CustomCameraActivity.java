@@ -109,14 +109,6 @@ public class CustomCameraActivity extends AppCompatActivity implements SurfaceHo
 
         });
 
-        findViewById(R.id.btn_zoom).setOnClickListener(v -> {
-
-             Camera.Parameters parameters;
-            parameters = mCamera.getParameters();
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-            mCamera.setParameters(parameters);
-
-        });
 
 
     }

@@ -10,27 +10,62 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             style="@style/MenuTabText"
             android:id="@+id/menu_image"
-            android:layout_height="80dp"
-            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_width="100dp"
+            android:src="@drawable/icon"
+            android:padding="20dp"
+            android:layout_margin="20dp"
             />
         <TextView
             style="@style/MenuTabText"
-            android:layout_marginTop="6dp"
+            android:layout_marginLeft="15dp"
             android:text="个人首页" />
         <TextView
             style="@style/MenuTabText"
+            android:layout_marginLeft="15dp"
             android:text="历史记录" />
         <TextView
             style="@style/MenuTabText"
+            android:layout_marginLeft="15dp"
             android:text="我的喜欢" />
         <TextView
             style="@style/MenuTabText"
+            android:layout_marginLeft="15dp"
             android:text="我的投稿" />
         <TextView
             style="@style/MenuTabText"
+            android:layout_marginLeft="15dp"
+            android:text="我的粉丝" />
+        <TextView
+            style="@style/MenuTabText"
+            android:layout_marginLeft="15dp"
+            android:text="直播中心" />
+        <TextView
+            style="@style/MenuTabText"
+            android:layout_marginLeft="15dp"
+            android:text="我的设置" />
+        <TextView
+            style="@style/MenuTabText"
+            android:layout_marginLeft="15dp"
+            android:text="我的关注" />
+        <TextView
+            style="@style/MenuTabText"
+            android:layout_marginLeft="15dp"
+            android:text="我的缓存" />
+        <TextView
+            style="@style/MenuTabText"
+            android:layout_marginLeft="15dp"
+            android:text="热点关注" />
+        <TextView
+            style="@style/MenuTabText"
+            android:layout_marginLeft="15dp"
+            android:text="我的社区" />
+        <TextView
+            style="@style/MenuTabText"
+            android:layout_marginLeft="15dp"
             android:text="意见反馈" />
     </LinearLayout>
 
